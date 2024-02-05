@@ -136,10 +136,12 @@ UPROGS=\
 	$U/_wc\
 	$U/_zombie\
 	$U/_mv\
+	$U/_cp\
 	$U/_touch\
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)
+	mkfs/mkfs fs.img doc.txt $(UPROGS)
 
 -include kernel/*.d user/*.d
 
