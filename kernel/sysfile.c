@@ -108,6 +108,19 @@ sys_close(void)
 }
 
 uint64
+sys_rename(void)
+{
+  char source[MAXPATH], destination[MAXPATH];
+
+  if (argstr(0, source, MAXPATH) < 0 ||
+      argstr(1, destination, MAXPATH)) {
+    return -1;
+  }
+
+  return 0;
+}
+
+uint64
 sys_fstat(void)
 {
   struct file *f;
