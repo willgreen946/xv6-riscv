@@ -1,5 +1,13 @@
 struct stat;
 
+#define stdin 0
+#define stdout 1
+#define stderr 2
+#define TRUE 1
+#define FALSE 0
+
+typedef unsigned short BOOL;
+
 // system calls
 int fork(void);
 int exit(int) __attribute__((noreturn));
@@ -22,6 +30,7 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
+int rename(const char*, const char*);
 
 // ulib.c
 int stat(const char*, struct stat*);

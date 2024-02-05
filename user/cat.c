@@ -1,5 +1,6 @@
 #include "kernel/types.h"
 #include "kernel/stat.h"
+#include "kernel/fcntl.h"
 #include "user/user.h"
 
 char buf[512];
@@ -10,7 +11,7 @@ cat(int fd)
   int n;
 
   while((n = read(fd, buf, sizeof(buf))) > 0) {
-    if (write(1, buf, n) != n) {
+    if (write(STDOUT_FILENO, buf, n) != n) {
       fprintf(2, "cat: write error\n");
       exit(1);
     }

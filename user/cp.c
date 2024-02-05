@@ -4,43 +4,50 @@
 #include "kernel/types.h"
 #include "user/user.h"
 
-int mv(int, const char**);
-int move(const char*, const char*);
+int cp(int, const char**);
+int copy(const char*, const char*);
 int scan_args(int, const char**);
 int usage(void);
 
-BOOL MV_VERBOSE_F = FALSE;
+BOOL CP_VERBOSE_F = FALSE;
+BOOL CP_DIRECTORY_F = FALSE;
 
 int
 main(int argc, char* argv[])
 {
-  if(argc != 3)
-    return usage();
-
-  return mv(argc, (const char**)argv);
+  return (argc >= 2) ?
+    cp(argc, (const char**)argv) : usage();
 }
 
 int
-mv(int argc, const char** argv)
+usage(void)
+{
+  fprintf(stdout,
+      "usage : cp [-v | -r] [source] [destination]\n");
+  return -1;
+}
+
+int
+cp(int argc, const char** argv)
 {
   return scan_args(argc, argv);
 }
 
 int
-move(const char* src, const char* dst)
+copy(const char* src, const char* dst)
 {
-  if(link(src, dst) < 0){
-    fprintf(stderr, "mv : failed to move file %s\n", src);
+  if(link(src, dst) < 0) {
+    fprintf(stderr, "cp : failed to copy file %s\n", src);
     return -1;
   }
 
-  switch(MV_VERBOSE_F){
+  switch(CP_VERBOSE_F){
     case TRUE:
       printf("%s -> %s\n", src, dst);
       break;
   }
 
-  return unlink(src);
+  return 0;
 }
 
 int
@@ -53,11 +60,14 @@ scan_args(int argc, const char** argv)
       for(k = 1; k < strlen(argv[i]); k++){
         switch(argv[i][k]){
           case 'v':
-            MV_VERBOSE_F = TRUE;
+            CP_VERBOSE_F = TRUE;
+            break;
+          case 'r':
+            CP_DIRECTORY_F = TRUE;
             break;
           default:
             fprintf(stderr,
-                "mv : unkown option - %c\n", argv[i][k]);
+                "cp : unkown option - %c\n", argv[i][k]);
             goto fail;
         }
       }
@@ -73,16 +83,8 @@ scan_args(int argc, const char** argv)
   if(inc != 2)
     goto fail;
 
-  return move(argv[include[0]], argv[include[1]]);
+  return copy(argv[include[0]], argv[include[1]]);
 
 fail:
   return usage();
-}
-
-int
-usage(void)
-{
-  fprintf(stderr,
-      "usage : mv [-v] [source] [destination]\n");
-  return -1;
 }
